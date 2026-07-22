@@ -38,6 +38,38 @@ new Marker([21.0285, 105.8542])
   .addTo(map);
 ```
 
+## Nhúng trực tiếp vào HTML
+
+Repository này công khai các file đã biên dịch trong thư mục `dist`, tương tự cách Leaflet cung cấp `leaflet.js` và `leaflet.css`.
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css"
+>
+
+<div id="map" style="height: 100vh"></div>
+
+<script src="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js"></script>
+<script>
+  const map = Vietflex.vietflexMap('map', {
+    useLegacyGoogleTiles: true,
+    googleMapType: 'roadmap'
+  });
+
+  new Vietflex.Marker([21.0285, 105.8542])
+    .bindPopup('Hà Nội')
+    .addTo(map);
+</script>
+```
+
+Liên kết trực tiếp:
+
+- CSS: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css`
+- JavaScript: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js`
+
+`dist/vietflex.js` là bản UMD dùng trực tiếp bằng thẻ `<script>` và tạo biến toàn cục `Vietflex`. `dist/vietflex.esm.js` dành cho dự án dùng ES modules.
+
 Google Maps Platform phải bật **Map Tiles API**, có thanh toán và giới hạn khóa theo miền. Không đưa khóa bí mật phía máy chủ vào mã trình duyệt.
 
 ## Chế độ tương thích với URL Google cũ
