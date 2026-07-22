@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Vietflex preprint: a Vietnam-first web-mapping interface for localized interactive cartography.">
+  <meta name="author" content="Long Ngo">
+  <title>Vietflex — Scientific Preprint</title>
+  <style>
+    :root {
+      --ink: #17211b;
+      --muted: #58645d;
+      --paper: #fffefa;
+      --canvas: #e9eee9;
+      --green: #087443;
+      --green-dark: #075331;
+      --red: #da251d;
+      --gold: #ffcd00;
+      --line: #d5ded7;
+      --soft: #f1f7f2;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font: 15px/1.58 Georgia, "Times New Roman", serif;
+    }
+    .toolbar {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: .7rem max(1rem, calc((100vw - 920px) / 2));
+      color: white;
+      background: rgba(7, 83, 49, .97);
+      box-shadow: 0 2px 14px rgba(0, 0, 0, .18);
+      font: 600 13px/1.3 system-ui, sans-serif;
+    }
+    .toolbar a, .toolbar button {
+      color: white;
+      border: 1px solid rgba(255, 255, 255, .45);
+      border-radius: 999px;
+      background: transparent;
+      padding: .42rem .75rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    main { padding: 2rem 1rem 4rem; }
+    .page {
+      width: min(210mm, 100%);
+      min-height: 297mm;
+      margin: 0 auto 1.6rem;
+      padding: 17mm 18mm 15mm;
+      background: var(--paper);
+      box-shadow: 0 16px 45px rgba(26, 42, 32, .13);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: .35rem; font: 750 34px/1.08 system-ui, sans-serif; letter-spacing: -.035em; }
+    h2 { margin: 1.1rem 0 .55rem; padding-bottom: .25rem; border-bottom: 2px solid var(--green); font: 750 20px/1.2 system-ui, sans-serif; }
+    h3 { margin: .8rem 0 .25rem; color: var(--green-dark); font: 750 15px/1.25 system-ui, sans-serif; }
+    p { margin-bottom: .62rem; text-align: justify; }
+    a { color: var(--green-dark); }
+    code { border-radius: 4px; background: #edf2ee; padding: .08em .3em; font: .88em ui-monospace, monospace; }
+    .kicker { margin-bottom: .75rem; color: var(--red); font: 800 12px/1.2 system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+    .subtitle { max-width: 48rem; color: var(--muted); font: 500 18px/1.42 system-ui, sans-serif; }
+    .author { margin: 1.15rem 0; padding-left: .9rem; border-left: 4px solid var(--gold); font-family: system-ui, sans-serif; }
+    .author strong { display: block; }
+    .meta { color: var(--muted); font-size: 13px; }
+    .abstract { margin: 1rem 0; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); }
+    .abstract h2 { margin-top: 0; border: 0; font-size: 16px; }
+    .keywords { font-size: 13px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin: .8rem 0; }
+    .card { padding: .75rem; border: 1px solid var(--line); border-radius: 10px; background: white; }
+    .card b { display: block; color: var(--green-dark); font-family: system-ui, sans-serif; }
+    .figure { margin: .75rem 0; padding: .8rem; border: 1px solid var(--line); border-radius: 12px; background: #fbfdfb; }
+    .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: .45rem; }
+    .node { min-height: 76px; padding: .65rem; border-radius: 9px; color: white; background: var(--green-dark); text-align: center; font: 700 13px/1.35 system-ui, sans-serif; }
+    .node.alt { color: var(--ink); background: #e5f2e9; border: 1px solid #bdd6c5; }
+    .arrow { color: var(--red); font: 900 22px system-ui, sans-serif; }
+    figcaption { margin-top: .5rem; color: var(--muted); font-size: 12px; text-align: center; }
+    table { width: 100%; margin: .7rem 0; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: .45rem .5rem; border: 1px solid var(--line); vertical-align: top; }
+    th { color: white; background: var(--green-dark); font-family: system-ui, sans-serif; text-align: left; }
+    ul, ol { margin: .35rem 0 .7rem; padding-left: 1.25rem; }
+    li { margin: .22rem 0; }
+    .callout { margin: .8rem 0; padding: .7rem .85rem; border-left: 4px solid var(--red); background: #fff4f1; }
+    .columns { columns: 2; column-gap: 1.25rem; }
+    .columns h3 { break-after: avoid; }
+    .footer { margin-top: 1rem; padding-top: .45rem; border-top: 1px solid var(--line); color: var(--muted); font: 12px/1.4 system-ui, sans-serif; text-align: center; }
+    .flag { display: inline-grid; width: 34px; height: 23px; place-items: center; margin-right: .45rem; color: var(--gold); background: var(--red); font-size: 14px; vertical-align: middle; }
+    @media (max-width: 720px) {
+      .page { min-height: auto; padding: 1.25rem; }
+      .grid { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); text-align: center; }
+      .columns { columns: 1; }
+      h1 { font-size: 29px; }
+    }
+    @page { size: A4; margin: 0; }
+    @media print {
+      body { background: white; font-size: 11.2pt; }
+      .toolbar { display: none; }
+      main { padding: 0; }
+      .page { width: 210mm; height: 297mm; min-height: 0; margin: 0; box-shadow: none; break-after: page; overflow: hidden; }
+      .page:last-child { break-after: auto; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="toolbar" aria-label="Document controls">
+    <span><span class="flag" aria-hidden="true">★</span>Vietflex Open Preprint</span>
+    <span><a href="README.md">Repository guide</a> <button type="button" onclick="window.print()">Print / Save PDF</button></span>
+  </nav>
+  <main>
+    <article>
+      <section class="page" id="page-1">
+        <div class="kicker">Open preprint · Version 1.0 · 22 July 2026</div>
+        <h1>Vietflex: A Vietnam-First Web-Mapping Interface for Localized Interactive Cartography</h1>
+        <p class="subtitle">Design, implementation, reproducibility, and responsible use of a lightweight JavaScript mapping library</p>
+
+        <div class="author">
+          <strong>Long Ngo</strong>
+          <span>Independent open-source developer, Viet Nam</span><br>
+          <a href="https://github.com/Vietflexmap/VN">github.com/Vietflexmap/VN</a>
+        </div>
+
+        <div class="abstract">
+          <h2>Abstract</h2>
+          <p>Web-mapping applications frequently require repeated configuration to achieve consistent geographic focus, language, regional preferences, attribution, controls, and deployment behavior. Vietflex is an open-source JavaScript interface that packages these concerns for Vietnam-oriented interactive maps while retaining compatibility with the Leaflet programming model. The library defines a Vietnam–East Sea initial view, provides localized map-layer adapters, supports official Google Maps Platform tile sessions when a valid key is supplied, and offers an explicitly opt-in compatibility adapter for a legacy Google tile URL. This paper describes the software architecture, public interface, reproducibility strategy, and operational constraints. It also separates software behavior from third-party cartographic claims: language and region parameters express a rendering preference but cannot guarantee the content returned by an external provider. Vietflex is therefore presented as an implementation framework—not an authoritative boundary dataset—and emphasizes pinned builds, transparent licensing, correct attribution, restricted API keys, and provider-compliant deployment.</p>
+          <p class="keywords"><strong>Keywords:</strong> web GIS; interactive cartography; JavaScript; Leaflet; localization; Vietnam; reproducible software</p>
+        </div>
+
+        <h2>1. Introduction</h2>
+        <p>Interactive maps are assembled from several independently evolving components: a client renderer, a base-map provider, application controls, data layers, and deployment infrastructure. Even a minimal map can produce inconsistent results when its center, bounds, language, region, attribution, or dependency version is left implicit. These problems are especially visible in regional applications, where naming, language and geographic context are central to user comprehension.</p>
+        <p>Vietflex addresses this integration problem through a small, inspectable API. It derives its interaction model from Leaflet and adds Vietnam-oriented defaults and adapters. The contribution is deliberately narrow: Vietflex standardizes application configuration and does not claim control over labels, boundaries, imagery, or availability supplied by Google or any other third party.</p>
+
+        <h3>1.1 Contributions</h3>
+        <div class="grid" aria-label="Main contributions">
+          <div class="card"><b>Localized defaults</b>Vietnam-focused center, navigation bounds, UI identity, and Vietnamese regional parameters.</div>
+          <div class="card"><b>Two explicit paths</b>Official Map Tiles API support and a separately enabled legacy compatibility path.</div>
+          <div class="card"><b>Reproducibility</b>Commit-pinned CDN examples, build checks, open licenses, and documented limitations.</div>
+        </div>
+        <div class="footer">Vietflex Open Preprint · Page 1 of 4</div>
+      </section>
+
+      <section class="page" id="page-2">
+        <div class="kicker">System design</div>
+        <h2>2. Design Requirements</h2>
+        <p>The design was guided by five requirements. First, a map should start in an appropriate regional context without forcing application authors to repeat coordinates and bounds. Second, the API should remain familiar to Leaflet users. Third, official and compatibility tile access must not be conflated. Fourth, deployments should be reproducible through immutable asset references. Fifth, attribution and licensing boundaries must remain visible.</p>
+
+        <figure class="figure">
+          <div class="flow" role="img" aria-label="Vietflex architecture from application through adapter to map provider">
+            <div class="node">Application<br><small>HTML + JavaScript</small></div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="node alt">Vietflex interface<br><small>defaults · controls · adapters</small></div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="node">Tile or data service<br><small>provider-controlled output</small></div>
+          </div>
+          <figcaption>Figure 1. Separation of application configuration, Vietflex behavior, and provider-controlled map content.</figcaption>
+        </figure>
+
+        <h2>3. Software Architecture</h2>
+        <h3>3.1 Public interface</h3>
+        <p>The UMD build exposes a global <code>Vietflex</code> object. <code>Vietflex.vietflexMap()</code> constructs a configured map, while familiar classes such as <code>Marker</code>, <code>ZoomControl</code>, and <code>AttributionControl</code> preserve the established interaction model. The default center is <code>[15.8, 109.5]</code> at zoom level <code>5</code>; the default navigation envelope is <code>[[0, 95], [27, 125]]</code>. All values remain overridable by the application.</p>
+
+        <h3>3.2 Layer access</h3>
+        <table>
+          <thead><tr><th>Path</th><th>Activation</th><th>Operational implication</th></tr></thead>
+          <tbody>
+            <tr><td>Official Map Tiles API</td><td>Provide <code>googleApiKey</code></td><td>Requires an enabled Google Cloud project, billing, key restrictions, and provider attribution.</td></tr>
+            <tr><td>Legacy compatibility URL</td><td>Set <code>useLegacyGoogleTiles: true</code></td><td>Opt-in and potentially unstable; the URL is not documented by Google as a public third-party Map Tiles API.</td></tr>
+            <tr><td>Application-supplied layer</td><td>Set <code>googleMaps: false</code></td><td>Allows another valid tile, PMTiles, raster, vector, or application data layer.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>3.3 Localization semantics</h3>
+        <p>For supported requests, Vietflex supplies Vietnamese language and Vietnam region preferences. In the compatibility URL these appear as <code>hl=vi</code> and <code>gl=VN</code>; official API use follows the provider's supported configuration. These parameters are requests, not assertions over returned content. External providers may change labels, boundaries, imagery, endpoints, or service terms independently of a Vietflex release.</p>
+
+        <h2>4. Minimal Integration</h2>
+        <pre><code>&lt;link rel="stylesheet" href=".../dist/vietflex.css"&gt;
+&lt;script src=".../dist/vietflex.js"&gt;&lt;/script&gt;
+&lt;div id="map" style="height:600px"&gt;&lt;/div&gt;
+&lt;script&gt;
+  const map = Vietflex.vietflexMap('map', {
+    useLegacyGoogleTiles: true,
+    googleMapType: 'roadmap'
+  });
+&lt;/script&gt;</code></pre>
+        <p>The repository README provides immutable, commit-pinned URLs for the ellipses above. Pinning prevents an application from silently receiving a different build when a mutable branch reference is updated or cached.</p>
+        <div class="footer">Vietflex Open Preprint · Page 2 of 4</div>
+      </section>
+
+      <section class="page" id="page-3">
+        <div class="kicker">Engineering and evaluation</div>
+        <h2>5. Reproducibility and Verification</h2>
+        <p>Vietflex treats the repository state as the reproducible unit. A deployment can refer to a complete commit identifier through jsDelivr, preserving the relationship between CSS, JavaScript and documentation. For development, the declared workflow installs locked dependencies and executes build, lint and test commands. This permits later maintainers to distinguish source defects from changes in a remote map service.</p>
+
+        <table>
+          <thead><tr><th>Check</th><th>Purpose</th><th>Evidence boundary</th></tr></thead>
+          <tbody>
+            <tr><td><code>npm ci</code></td><td>Restore the dependency graph from the lockfile.</td><td>Dependency installation only.</td></tr>
+            <tr><td><code>npm run build</code></td><td>Produce distributable assets through Rollup.</td><td>Build success does not validate third-party tile content.</td></tr>
+            <tr><td><code>npm run lint</code></td><td>Check source and style rules.</td><td>Static consistency, not runtime availability.</td></tr>
+            <tr><td><code>npm test -- --run</code></td><td>Execute the configured Vitest browser suite once.</td><td>Behavior covered by repository tests.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>5.1 Evaluation approach</h3>
+        <p>This preprint reports a software design analysis rather than an empirical performance benchmark. The appropriate verification target is therefore conformance: whether documented options map to the intended application configuration, whether distributable files load together, whether controls are instantiated once, and whether failure modes are made explicit. No numerical performance, cartographic accuracy, administrative-boundary completeness, or availability result is claimed here.</p>
+
+        <div class="grid">
+          <div class="card"><b>Determinism</b>Pin CSS and JavaScript to the same immutable commit.</div>
+          <div class="card"><b>Isolation</b>Test library behavior separately from provider responses.</div>
+          <div class="card"><b>Traceability</b>Use semantic releases and maintain <code>CHANGELOG.md</code>.</div>
+        </div>
+
+        <h2>6. Security, Privacy, and Compliance</h2>
+        <p>Browser-visible credentials cannot be treated as secrets. Deployers should restrict Google API keys by HTTP referrer, enable only the required API, configure quotas, and monitor billing. Server credentials and unpublished vulnerability details must never be placed in examples or public issues. Security reports should use GitHub's private vulnerability-reporting channel described in <code>SECURITY.md</code>.</p>
+        <p>Map use can also disclose end-user network metadata and interaction patterns to external services. A production application should provide an appropriate privacy notice, minimize data collection, obtain any required consent, and assess the terms and data-processing behavior of each selected provider.</p>
+
+        <div class="callout"><strong>Provider compliance.</strong> Vietflex's open-source licenses apply to the software components identified in the repository. They do not license Google logos, imagery, map data, or services. Deployers remain responsible for current provider terms, attribution, billing, and credential controls.</div>
+
+        <h2>7. Limitations</h2>
+        <ol>
+          <li>Localization parameters cannot guarantee specific labels or geopolitical representations.</li>
+          <li>The legacy compatibility endpoint can change or stop working without a Vietflex release.</li>
+          <li>Default bounds are an interface choice, not a legal or geodetic boundary definition.</li>
+          <li>The library does not independently validate the accuracy, currency, or completeness of third-party map content.</li>
+          <li>This version does not report controlled usability or performance experiments.</li>
+        </ol>
+        <div class="footer">Vietflex Open Preprint · Page 3 of 4</div>
+      </section>
+
+      <section class="page" id="page-4">
+        <div class="kicker">Open science statement</div>
+        <h2>8. Discussion</h2>
+        <p>Vietflex demonstrates that regional adaptation is most maintainable when it is encoded as transparent, overridable configuration rather than embedded as an unverifiable claim. The architecture provides a stable application-facing layer while preserving a clear boundary around external services. This separation helps developers reason about failures: a loading defect may originate in asset caching, credential configuration, provider availability, or the library itself, and each source requires different evidence.</p>
+        <p>The same design principle supports future expansion. Administrative data layers, offline packages, export workflows, and accessibility improvements can be added without changing the meaning of the base-layer adapter. Any such extension should publish provenance, version, coordinate reference system, coverage date, and validation method for each dataset.</p>
+
+        <h2>9. Conclusion</h2>
+        <p>Vietflex offers a compact, Vietnam-first interface for browser-based interactive mapping. Its principal value lies in consistent defaults, a familiar Leaflet-derived API, an explicit distinction between official and compatibility tile access, and a reproducible open-source distribution model. Responsible use requires immutable versioning, visible attribution, restricted keys, transparent provider dependencies, and caution when interpreting externally supplied cartography. The project is released for inspection, reuse, testing, and community review.</p>
+
+        <h2>Declarations</h2>
+        <div class="columns">
+          <h3>Software and data availability</h3>
+          <p>Source code, distributable assets, documentation, issue history and this preprint are available at <a href="https://github.com/Vietflexmap/VN">github.com/Vietflexmap/VN</a>. A commit identifier should be recorded when citing or deploying the software. No new research dataset was generated for this paper.</p>
+
+          <h3>Author contributions</h3>
+          <p>Long Ngo: conceptualization, software, documentation, visualization, and project administration.</p>
+
+          <h3>Funding</h3>
+          <p>No external funding is declared in this preprint.</p>
+
+          <h3>Competing interests</h3>
+          <p>The author declares no competing interests.</p>
+
+          <h3>Ethics</h3>
+          <p>This software-description study did not involve human participants, animals, or identifiable personal data; institutional ethics approval was not applicable.</p>
+
+          <h3>License</h3>
+          <p>Leaflet-derived core material remains under BSD-2-Clause. Vietflex-specific additions are identified under the MIT License. See <code>LICENSE</code>, <code>LICENSE-VIETFLEX</code>, and <code>NOTICE</code>.</p>
+        </div>
+
+        <h2>References</h2>
+        <ol>
+          <li>Agafonkin, V. et al. <em>Leaflet: an open-source JavaScript library for mobile-friendly interactive maps</em>. Software and documentation, accessed 22 July 2026.</li>
+          <li>Google Maps Platform. <em>Map Tiles API documentation</em>. Developer documentation, accessed 22 July 2026.</li>
+          <li>Open Source Initiative. <em>The MIT License</em> and <em>BSD 2-Clause License</em>. License texts, accessed 22 July 2026.</li>
+          <li>Ngo, L. <em>Vietflex</em>. Source-code repository, version 1.0.0, 2026. <a href="https://github.com/Vietflexmap/VN">https://github.com/Vietflexmap/VN</a>.</li>
+        </ol>
+
+        <div class="callout"><strong>Preprint notice.</strong> This manuscript has not undergone formal peer review. Readers are invited to inspect the source, reproduce the build, and report technical or scholarly corrections through the repository.</div>
+        <div class="footer">© 2026 Long Ngo · Open preprint · Page 4 of 4</div>
+      </section>
+    </article>
+  </main>
+</body>
+</html>
