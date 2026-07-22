@@ -38,9 +38,9 @@ Không cần cài npm hoặc tải Vietflex về máy. Sao chép nguyên tệp H
 
   <link
     rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css"
+    href="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@6144d565fcf236727577ab3c4471bbe49f86892f/dist/vietflex.css"
   >
-  <script src="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@6144d565fcf236727577ab3c4471bbe49f86892f/dist/vietflex.js"></script>
 
   <style>
     #map { height: 600px; }
@@ -52,8 +52,14 @@ Không cần cài npm hoặc tải Vietflex về máy. Sao chép nguyên tệp H
   <script>
     const map = Vietflex.vietflexMap('map', {
       useLegacyGoogleTiles: true,
-      googleMapType: 'roadmap'
+      googleMapType: 'roadmap',
+      zoomControl: false,
+      attributionControl: false
     });
+
+    // Thêm đúng một bộ nút zoom và một dòng ghi nguồn.
+    new Vietflex.ZoomControl({position: 'topleft'}).addTo(map);
+    new Vietflex.AttributionControl({position: 'bottomright'}).addTo(map);
 
     new Vietflex.Marker([21.0285, 105.8542])
       .bindPopup('Hà Nội')
@@ -72,11 +78,11 @@ const marker = new Vietflex.Marker([21.0285, 105.8542]);
 
 ### Liên kết CDN trực tiếp
 
-- CSS: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css`
-- JavaScript UMD: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js`
-- JavaScript ES module: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.esm.js`
+- CSS: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@6144d565fcf236727577ab3c4471bbe49f86892f/dist/vietflex.css`
+- JavaScript UMD: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@6144d565fcf236727577ab3c4471bbe49f86892f/dist/vietflex.js`
+- JavaScript ES module: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@6144d565fcf236727577ab3c4471bbe49f86892f/dist/vietflex.esm.js`
 
-`@main` luôn lấy bản mới nhất từ nhánh chính. Với website đưa vào vận hành, nên thay `main` bằng một tag phiên bản hoặc commit SHA đã kiểm thử để tránh thay đổi ngoài dự kiến.
+Ví dụ trên ghim CDN vào commit `6144d565fcf236727577ab3c4471bbe49f86892f` đã sửa lỗi control bị lặp. Cách này tránh việc `@main` trả về JavaScript cũ do bộ nhớ đệm CDN và giúp website không thay đổi ngoài dự kiến.
 
 > Gói `vietflex` chưa được phát hành trên npm, vì vậy `npm install vietflex` và `https://unpkg.com/vietflex/...` hiện chưa dùng được. README chỉ công bố các URL đang có tệp thật trên repository.
 
