@@ -24,80 +24,85 @@ Mã nguồn demo: [MapVN](./2c667178-1bce-48c2-b240-1c23f68b8ac9.html)
 - Có lớp tương thích cho URL Google `mt0…mt3` theo yêu cầu của dự án.
 - Roadmap, satellite, hybrid và terrain.
 
-## Cài đặt
+## Bắt đầu nhanh — gọi trực tiếp như Leaflet
 
-```bash
-npm install vietflex
-```
-
-```js
-import {vietflexMap, Marker} from 'vietflex';
-import 'vietflex/styles.css';
-
-const map = vietflexMap('map', {
-  googleApiKey: 'YOUR_GOOGLE_MAPS_PLATFORM_KEY',
-  googleMapType: 'roadmap'
-});
-
-new Marker([21.0285, 105.8542])
-  .bindPopup('Hà Nội')
-  .addTo(map);
-```
-
-## Nhúng trực tiếp vào HTML
-
-Repository này công khai các file đã biên dịch trong thư mục `dist`, tương tự cách Leaflet cung cấp `leaflet.js` và `leaflet.css`.
+Không cần cài npm hoặc tải Vietflex về máy. Sao chép nguyên tệp HTML dưới đây và chạy bằng trình duyệt:
 
 ```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css"
->
+<!doctype html>
+<html lang="vi">
+<head>
+  <title>Bản đồ Việt Nam</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div id="map" style="height: 100vh"></div>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css"
+  >
+  <script src="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js"></script>
 
-<script src="https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js"></script>
-<script>
-  const map = Vietflex.vietflexMap('map', {
-    useLegacyGoogleTiles: true,
-    googleMapType: 'roadmap'
-  });
+  <style>
+    #map { height: 600px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
 
-  new Vietflex.Marker([21.0285, 105.8542])
-    .bindPopup('Hà Nội')
-    .addTo(map);
-</script>
+  <script>
+    const map = Vietflex.vietflexMap('map', {
+      useLegacyGoogleTiles: true,
+      googleMapType: 'roadmap'
+    });
+
+    new Vietflex.Marker([21.0285, 105.8542])
+      .bindPopup('Hà Nội')
+      .addTo(map);
+  </script>
+</body>
+</html>
 ```
 
-Liên kết trực tiếp:
+Vietflex tự đặt tâm mặc định tại Việt Nam và Biển Đông. Biến toàn cục `Vietflex` hoạt động tương tự biến `L` của Leaflet:
+
+```js
+const map = Vietflex.vietflexMap('map');
+const marker = new Vietflex.Marker([21.0285, 105.8542]);
+```
+
+### Liên kết CDN trực tiếp
 
 - CSS: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.css`
-- JavaScript: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js`
+- JavaScript UMD: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.js`
+- JavaScript ES module: `https://cdn.jsdelivr.net/gh/Vietflexmap/VN@main/dist/vietflex.esm.js`
 
-`dist/vietflex.js` là bản UMD dùng trực tiếp bằng thẻ `<script>` và tạo biến toàn cục `Vietflex`. `dist/vietflex.esm.js` dành cho dự án dùng ES modules.
+`@main` luôn lấy bản mới nhất từ nhánh chính. Với website đưa vào vận hành, nên thay `main` bằng một tag phiên bản hoặc commit SHA đã kiểm thử để tránh thay đổi ngoài dự kiến.
 
-Google Maps Platform phải bật **Map Tiles API**, có thanh toán và giới hạn khóa theo miền. Không đưa khóa bí mật phía máy chủ vào mã trình duyệt.
+> Gói `vietflex` chưa được phát hành trên npm, vì vậy `npm install vietflex` và `https://unpkg.com/vietflex/...` hiện chưa dùng được. README chỉ công bố các URL đang có tệp thật trên repository.
+
+Nếu sử dụng Google Maps Platform chính thức, phải bật **Map Tiles API**, cấu hình thanh toán và giới hạn khóa theo tên miền. Không đưa khóa bí mật phía máy chủ vào mã trình duyệt.
 
 ## Chế độ tương thích với URL Google cũ
 
 Đoạn cấu hình dưới đây tương ứng với mẫu `L.tileLayer(...)` được yêu cầu, đồng thời dùng HTTPS và bổ sung tiếng Việt/khu vực Việt Nam:
 
-```js
-import {vietflexMap} from 'vietflex';
-
-const map = vietflexMap('map', {
+```html
+<script>
+const map = Vietflex.vietflexMap('map', {
   useLegacyGoogleTiles: true,
   googleMapType: 'roadmap'
 });
+</script>
 ```
 
 Hoặc tạo lớp trực tiếp:
 
-```js
-import {legacyGoogleTiles} from 'vietflex';
-
-const googleStreets = legacyGoogleTiles({mapType: 'roadmap'});
+```html
+<script>
+const map = Vietflex.vietflexMap('map', {googleMaps: false});
+const googleStreets = Vietflex.legacyGoogleTiles({mapType: 'roadmap'});
 googleStreets.addTo(map);
+</script>
 ```
 
 URL được tạo:
