@@ -897,9 +897,19 @@ path.leaflet-interactive:focus:not(:focus-visible) {
       background: var(--vf-panel);
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
       backdrop-filter: blur(12px);
+      cursor: pointer;
       font-size: 12px;
       font-weight: 700;
+      pointer-events: auto;
       text-decoration: none;
+      touch-action: manipulation;
+    }
+
+    .map-credit:hover { background: #fff; }
+
+    .map-credit:focus-visible {
+      outline: 3px solid var(--vf-yellow);
+      outline-offset: 3px;
     }
 
     .map-credit .flag {
@@ -957,6 +967,7 @@ path.leaflet-interactive:focus:not(:focus-visible) {
     href="https://github.com/Vietflexmap/VN"
     target="_blank"
     rel="noopener noreferrer"
+    title="Mở mã nguồn Vietflexmap/VN trên GitHub"
     aria-label="Vietflex | Google Maps — mở mã nguồn trên GitHub"
   >
     <span class="flag" aria-hidden="true"></span>
