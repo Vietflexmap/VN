@@ -7,8 +7,8 @@ authors:
     family-names: Ngo
 version: 1.0.0
 date-released: 2026-07-22
-repository-code: https://github.com/Vietflexmap/Vietflex
-url: https://github.com/Vietflexmap/Vietflex
+repository-code: https://github.com/Vietflexmap/VN
+url: https://github.com/Vietflexmap/VN
 license: BSD-2-Clause AND MIT
 references:
   - type: software
