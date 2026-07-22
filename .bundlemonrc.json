@@ -1,0 +1,23 @@
+{
+  "baseDir": "dist",
+  "defaultCompression": "gzip",
+  "files": [
+    {
+      "maxSize": "40kB",
+      "path": "vietflex.js"
+    }, {
+      "maxSize": "3.2kB",
+      "path": "vietflex.css"
+    }
+  ],
+  "reportOutput": [
+    [
+      "github",
+      {
+        "checkRun": true,
+        "commitStatus": false,
+        "prComment": false
+      }
+    ]
+  ]
+}

@@ -1,0 +1,18 @@
+Vietflex 1.0.0
+Copyright (c) 2026 Long Ngo
+
+Vietflex is based on Leaflet. Leaflet-derived source and binary code remains
+licensed under the BSD 2-Clause License in LICENSE:
+
+  Copyright (c) 2010-2026, Volodymyr Agafonkin
+  Copyright (c) 2010-2011, CloudMade
+
+Vietflex-specific modules, branding, examples and documentation are licensed
+under the MIT License in LICENSE-VIETFLEX unless a file says otherwise.
+
+Google Maps content, map labels, logos and imagery are supplied by Google and
+are not distributed under either open-source license above. Use of Google Maps
+Platform is governed by Google's applicable terms and attribution policies.
+
+Vietflex is an independent project and is not endorsed by or affiliated with
+Leaflet or Google.

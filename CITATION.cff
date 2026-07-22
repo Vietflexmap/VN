@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: Vietflex, a Vietnam-first JavaScript library for interactive maps
+message: If you use Vietflex, please cite this software and Leaflet.
+type: software
+authors:
+  - given-names: Long
+    family-names: Ngo
+version: 1.0.0
+date-released: 2026-07-22
+repository-code: https://github.com/Vietflexmap/Vietflex
+url: https://github.com/Vietflexmap/Vietflex
+license: BSD-2-Clause AND MIT
+references:
+  - type: software
+    title: Leaflet
+    authors:
+      - given-names: Volodymyr
+        family-names: Agafonkin
+    repository-code: https://github.com/Leaflet/Leaflet
+    license: BSD-2-Clause
